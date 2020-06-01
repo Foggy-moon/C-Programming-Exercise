@@ -4,40 +4,36 @@
 #define true 1
 #define false 0
 #define bool int
-bool dfs(char** grid, int gridSize, int* gridColSize, int row, int col, int** visit)
+//直接修改grid，将已访问过的岛屿值设为0，避免重复计数
+bool DFS(char** grid, int gridSize, int* gridColSize, int x, int y)
 {
-	if (row < 0 || row >= gridSize || col < 0 || col >= *gridColSize)
+	if (x < 0 || x >= gridSize || y < 0 || y >= gridColSize[0]  || grid[x][y] == '0')
 		return false;
-	if (grid[row][col] == '1' && visit[row][col] == 0)
+	else
 	{
-		visit[row][col] = 1;
-		dfs(grid, gridSize, gridColSize, row + 1, col, visit);
-		dfs(grid, gridSize, gridColSize, row - 1, col, visit);
-		dfs(grid, gridSize, gridColSize, row, col + 1, visit);
-		dfs(grid, gridSize, gridColSize, row, col - 1, visit);
+		grid[x][y] = '0';
+		DFS(grid, gridSize, gridColSize, x - 1, y );
+		DFS(grid, gridSize, gridColSize, x + 1, y);
+		DFS(grid, gridSize, gridColSize, x, y - 1);
+		DFS(grid, gridSize, gridColSize, x, y + 1);
 		return true;
 	}
-	return false;
+	
 }
 int numIslands(char** grid, int gridSize, int* gridColSize) {
-	int i, row, col, nums = 0;
-	if (grid == NULL || gridSize <= 0 || gridColSize == NULL || *gridColSize <= 0)
+	if (grid == NULL || gridColSize==NULL || gridSize <= 0 || gridColSize[0] <= 0)
 		return 0;
-	//按照地图大小构建已访问数组地址，初始每个位置未访问
-	int** visit = (int**)malloc(sizeof(int*) * gridSize);
-	for (i = 0; i < gridSize; i++)
-	{
-		visit[i] = (int*)malloc(sizeof(int) * (*gridColSize));
-		memset(visit[i], 0, sizeof(int) * (*gridColSize));
-	}
-	for (row = 0; row < gridSize; row++)
-		for (col = 0; col < *gridColSize; col++)
-		{
-			//动态二维数组在函数中的传参
-			if (dfs(grid, gridSize, gridColSize, row, col, visit))
-				nums++;
+	int row, col, num=0;
+	for (row = 0; row < gridSize; row++) {
+		for (col = 0; col < gridColSize[0]; col++){
+			if (DFS(grid, gridSize, gridColSize, row , col))
+			{
+				num++;
+				grid[row][col] = '0';
+			}
 		}
-	return nums;
+	}
+	return num;
 }
 
 void main()
