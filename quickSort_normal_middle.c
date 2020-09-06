@@ -23,7 +23,7 @@ int getMiddle(int* nums, int left, int right)
 }
 void quickSort(int* nums, int left, int right) 
 {
-    while (left < right) {
+    if (left < right) {
         int mid = getMiddle(nums, left, right);
         quickSort(nums, left, mid - 1);
         quickSort(nums, mid + 1, right);
